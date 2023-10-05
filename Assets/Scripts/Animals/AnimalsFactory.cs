@@ -26,7 +26,8 @@ public class AnimalsFactory : IAnimalsFactory
     public void SpawnRandomAnimal()
     {
         var type = GetRandomAnimalType();
-        var position = Vector3.zero;
+        // TODO height offset
+        var position = Park.GetRandomFreePoint() + new Vector3(0, 1f, 0);
         BuildAnimal(type, position);
     }
 
@@ -119,7 +120,8 @@ public class AnimalsFactory : IAnimalsFactory
                 var predatorModel = model as IPredatorModel;
                 var modelPredatorMono = predatorModel as MonoBehaviour;
                 var moverPredator = BuildMover(modelPredatorMono, config);
-                return new PredatorStateMachine(predatorModel, moverPredator, DeathCounter);
+                var speaker = new BannerSpeaker(ResourceManager, modelPredatorMono, 1f, modelPredatorMono.transform);
+                return new PredatorStateMachine(predatorModel, moverPredator, speaker, DeathCounter);
 
         }
         throw new NotImplementedException();
@@ -130,14 +132,28 @@ public class AnimalsFactory : IAnimalsFactory
         switch (config.MoverType)
         {
             case EMoverTypes.Linear:
-                var speed = config.Speed;
-                var interval = config.MoveInterval;
-                var rigidbody = model.GetComponent<Rigidbody>();
-                return new LineMover(rigidbody, interval, speed);
+                return BuildLinealMover(model, config, Park);
             case EMoverTypes.Jump:
-                return new JumpMover();
+                return BuildJumpMover(model, config, Park);
         }
 
         throw new NotImplementedException();
+    }
+
+    private IMover BuildLinealMover(MonoBehaviour model, AnimalConfig config, IParkModel park)
+    {
+        var speed = config.Speed;
+        var interval = config.MoveInterval;
+        var rigidbody = model.GetComponent<Rigidbody>();
+        return new LineMover(rigidbody, interval, speed, park);
+    }
+
+    private IMover BuildJumpMover(MonoBehaviour model, AnimalConfig config, IParkModel park)
+    {
+        var speed = config.Speed;
+        var interval = config.MoveInterval;
+        var height = config.JumpHeight;
+        var rigidbody = model.GetComponent<Rigidbody>();
+        return new JumpMover(rigidbody, interval, speed, height, park);
     }
 }

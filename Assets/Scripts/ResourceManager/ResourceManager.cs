@@ -5,6 +5,7 @@ using UnityEngine.Pool;
 
 public class ResourceManager : IResourceManager
 {
+    // TODO type
     private Dictionary<object, ObjectPool<GameObject>> ObjectPools = new Dictionary<object, ObjectPool<GameObject>>();
 
     public void Dispose()

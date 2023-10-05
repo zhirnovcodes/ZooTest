@@ -1,7 +1,7 @@
 public interface IMover
 {
-    void Enable();
-    void Disable();
+    void StartMoving();
+    void StopMoving();
 
-    void Update();
+    void UpdateMoving();
 }

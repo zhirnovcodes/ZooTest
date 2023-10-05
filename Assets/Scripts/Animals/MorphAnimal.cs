@@ -5,6 +5,11 @@ public class MorphAnimal : MonoBehaviour, IPreyModel, IPredatorModel
 {
     public event Action<IAnimal> AnimalCollided = animal => { };
 
+    [SerializeField] private Material DeadMaterial;
+
+    private Material AliveMaterial;
+    private MeshRenderer Renderer;
+
     public EAnimals AnimalType { get; private set; }
 
     public EFoodChainTypes FoodChainType { get; private set; }
@@ -18,11 +23,14 @@ public class MorphAnimal : MonoBehaviour, IPreyModel, IPredatorModel
         StateMachine = stateMachine;
         AnimalType = animalType;
         FoodChainType = foodChainType;
+
+        Renderer = GetComponent<MeshRenderer>();
+        AliveMaterial = Renderer.sharedMaterial;
     }
 
     public void PlayDeadAnimation()
     {
-        //play dead animation
+        Renderer.sharedMaterial = DeadMaterial;
     }
 
     public void Speak()
@@ -42,12 +50,15 @@ public class MorphAnimal : MonoBehaviour, IPreyModel, IPredatorModel
 
     public void Enable()
     {
+        this.enabled = true;
         StateMachine.Enable();
         IsAlive = true;
+        Renderer.sharedMaterial = AliveMaterial;
     }
 
     public void Disable()
     {
+        this.enabled = false;
         StateMachine.Disable();
         gameObject.SetActive(false);
     }

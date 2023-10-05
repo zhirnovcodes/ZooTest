@@ -47,12 +47,12 @@ public class PreyStateMachine : IState
 
         public void Disable()
         {
-            Machine.Mover.Disable();
+            Machine.Mover.StopMoving();
         }
 
         public void Enable()
         {
-            Machine.Mover.Enable();
+            Machine.Mover.StartMoving();
         }
 
         public void Update()
@@ -65,7 +65,7 @@ public class PreyStateMachine : IState
                 return;
             }
 
-            Machine.Mover.Update();
+            Machine.Mover.UpdateMoving();
         }
     }
 

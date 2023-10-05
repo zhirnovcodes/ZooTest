@@ -1,10 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PredatorStateMachine : IState
 {
     private IMover Mover;
+    private ISpeaker Speaker;
     private IPredatorModel Model;
 
     private DeathCounterModel DeathCounter;
@@ -13,12 +12,15 @@ public class PredatorStateMachine : IState
     private IState MovingState;
     private IState DyingState;
 
-    public PredatorStateMachine(IPredatorModel model, IMover mover, DeathCounterModel deathCounter)
+    public PredatorStateMachine(IPredatorModel model, IMover mover, ISpeaker speaker, DeathCounterModel deathCounter)
     {
         Model = model;
         Mover = mover;
+        Speaker = speaker;
         DeathCounter = deathCounter;
+
         MovingState = new MoveState(this);
+        DyingState = new DeathState(this);
     }
 
     public void Disable()
@@ -48,13 +50,14 @@ public class PredatorStateMachine : IState
 
         public void Disable()
         {
-            StateMachine.Mover.Disable();
+            StateMachine.Mover.StopMoving();
+            StateMachine.Speaker.Interrupt();
             StateMachine.Model.AnimalCollided -= HandleAnimalCollided;
         }
 
         public void Enable()
         {
-            StateMachine.Mover.Enable();
+            StateMachine.Mover.StartMoving();
             StateMachine.Model.AnimalCollided += HandleAnimalCollided;
         }
 
@@ -67,7 +70,7 @@ public class PredatorStateMachine : IState
                     if (mortalOther.IsAlive)
                     {
                         mortalOther.Kill();
-                        StateMachine.Model.Speak();
+                        StateMachine.Speaker.Speak();
                     }
                 }
             }
@@ -83,7 +86,7 @@ public class PredatorStateMachine : IState
                 return;
             }
 
-            StateMachine.Mover.Update();
+            StateMachine.Mover.UpdateMoving();
         }
     }
 

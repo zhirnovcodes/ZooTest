@@ -10,24 +10,27 @@ public class LineMover : IMover
     private float ElapsedTime;
     private float Interval;
 
-    public LineMover(Rigidbody rigidbody, float intervalTime, float speed)
+    private IParkModel Park;
+
+    public LineMover(Rigidbody rigidbody, float intervalTime, float speed, IParkModel park)
     {
         Rigidbody = rigidbody;
         Speed = speed;
+        Park = park;
         Interval = intervalTime;
     }
 
-    public void Disable()
+    public void StopMoving()
     {
     }
 
-    public void Enable()
+    public void StartMoving()
     {
         ChooseDirection();
         ElapsedTime = Interval;
     }
 
-    public void Update()
+    public void UpdateMoving()
     {
         if (ElapsedTime > 0)
         {
@@ -39,8 +42,8 @@ public class LineMover : IMover
             }
         }
 
-        var position = Rigidbody.position;
-        position += Direction * Time.deltaTime;
+        var position = Rigidbody.position + Direction * Time.deltaTime;
+
         Rigidbody.MovePosition(position);
     }
 
@@ -51,9 +54,17 @@ public class LineMover : IMover
         var x = Mathf.Cos(alpha);
         var z = Mathf.Sin(alpha);
 
-        var direction = new Vector3(x, 0, z);
+        var direction = new Vector3(x, 0, z).normalized;
 
         Direction = direction * Speed;
+
+        var position = Rigidbody.position + Direction * Interval;
+
+        if (Park.IsOutOfBounds(position))
+        {
+            Direction = (Park.GetCenter() - Rigidbody.position).normalized;
+            Direction *= Speed;
+        }
     }
 }
 
