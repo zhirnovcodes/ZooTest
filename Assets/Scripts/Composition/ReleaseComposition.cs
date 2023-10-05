@@ -4,8 +4,9 @@ public class ReleaseComposition : IComposition
 {
     private IResourceManager Resource;
     private IParkModel ParkModel;
-    private IAnimalsRepository AnimalsRepository;
+    private IAnimalsFactory AnimalsFactory;
     private IAnimalsSpawnStrategy AnimalsSpawnStrategy;
+    private DeathCounterModel DeathCounter;
 
     private GameConfigReader ConfigReader;
     private GameConfig GameConfig;
@@ -25,23 +26,26 @@ public class ReleaseComposition : IComposition
         ParkModel = null;
         ConfigReader = null;
         GameConfig = null;
-        AnimalsRepository = null;
+        AnimalsFactory = null;
         AnimalsSpawnStrategy = null;
+        DeathCounter = null;
 
     }
 
-    public IAnimalsRepository GetAnimalsRepository()
+    public IAnimalsFactory GetAnimalsFactory()
     {
-        if (AnimalsRepository == null)
+        if (AnimalsFactory == null)
         {
             var resource = GetResourceManager();
             var park = GetParkModel();
-            var repo = new AnimalsRepository(resource, park);
+            var counter = GetDeathCounter();
+            var gameConfig = GetGameConfig();
+            var repo = new AnimalsFactory(resource, park, counter, gameConfig);
 
-            AnimalsRepository = repo;
+            AnimalsFactory = repo;
         }
 
-        return AnimalsRepository;
+        return AnimalsFactory;
     }
 
     public IAnimalsSpawnStrategy GetAnimalsSpawnStrategy()
@@ -63,6 +67,15 @@ public class ReleaseComposition : IComposition
         }
 
         return ConfigReader;
+    }
+
+    public DeathCounterModel GetDeathCounter()
+    {
+        if (DeathCounter == null)
+        {
+            DeathCounter = new DeathCounterModel();
+        }
+        return DeathCounter;
     }
 
     public GameConfig GetGameConfig()
@@ -97,4 +110,6 @@ public class ReleaseComposition : IComposition
 
         return Resource;
     }
+
+
 }

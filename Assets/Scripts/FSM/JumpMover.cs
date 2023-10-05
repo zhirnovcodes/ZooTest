@@ -23,6 +23,6 @@ public class JumpMover : IMover
 
     private void Jump(Vector3 distance)
     {
-        Rigidbody.AddForce();
+        //Rigidbody.AddForce();
     }
 }

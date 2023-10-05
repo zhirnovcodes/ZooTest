@@ -4,30 +4,41 @@ public class LineMover : IMover
 {
     private Rigidbody Rigidbody;
     private float Speed;
-    private UpdateTimer Timer;
 
     private Vector3 Direction;
 
-    public LineMover(Rigidbody rigidbody, MonoBehaviour timerInvoker, float intervalTime, float speed)
+    private float ElapsedTime;
+    private float Interval;
+
+    public LineMover(Rigidbody rigidbody, float intervalTime, float speed)
     {
         Rigidbody = rigidbody;
         Speed = speed;
-        Timer = new UpdateTimer(timerInvoker, intervalTime, true);
+        Interval = intervalTime;
     }
 
     public void Disable()
     {
-        Timer.StopTimer();
     }
 
     public void Enable()
     {
-        Timer.AddTimerEndListener(ChooseDirection);
-        Timer.StartTimer();
+        ChooseDirection();
+        ElapsedTime = Interval;
     }
 
     public void Update()
     {
+        if (ElapsedTime > 0)
+        {
+            ElapsedTime -= Time.deltaTime;
+            if (ElapsedTime <= 0)
+            {
+                ChooseDirection();
+                ElapsedTime = Interval;
+            }
+        }
+
         var position = Rigidbody.position;
         position += Direction * Time.deltaTime;
         Rigidbody.MovePosition(position);

@@ -1,12 +1,12 @@
-using System.Collections.Generic;
+using System;
 
 public interface IPredatorModel : IAnimal, IMortal
 {
-    void GetCollidedObjects(List<IAnimal> resultList);
+    event Action<IAnimal> AnimalCollided;
 
     void Speak();
-    void Die();
+    void PlayDeadAnimation();
 
-    void StartMoving();
-    void StopMoving();
+    void Enable();
+    void Disable();
 }

@@ -1,11 +1,10 @@
+using System;
 using System.Collections.Generic;
 
 public interface IPreyModel : IAnimal, IMortal
 {
-    void GetCollidedObjects(List<IAnimal> resultList);
+    void PlayDeadAnimation();
 
-    void Die();
-
-    void StartMoving();
-    void StopMoving();
+    void Enable();
+    void Disable();
 }

@@ -4,9 +4,10 @@ public interface IComposition : IDisposable
 {
     IResourceManager GetResourceManager();
     IParkModel GetParkModel();
-    IAnimalsRepository GetAnimalsRepository();
+    IAnimalsFactory GetAnimalsFactory();
     IAnimalsSpawnStrategy GetAnimalsSpawnStrategy();
 
+    DeathCounterModel GetDeathCounter();
     GameConfigReader GetConfigReader();
     GameConfig GetGameConfig();
 }

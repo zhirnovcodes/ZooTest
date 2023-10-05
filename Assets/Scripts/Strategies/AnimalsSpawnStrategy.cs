@@ -4,14 +4,14 @@ using UnityEngine;
 public class AnimalsSpawnStrategy : MonoBehaviour, IAnimalsSpawnStrategy
 {
     private Coroutine Routine;
-    private IAnimalsRepository Repository;
+    private IAnimalsFactory Factory;
 
     private float MinInterval;
     private float MaxInterval;
 
     private void Awake()
     {
-        Repository = Composition.GetAnimalsRepository(); 
+        Factory = Composition.GetAnimalsFactory(); 
 
         var config = Composition.GetGameConfig();
 
@@ -37,7 +37,7 @@ public class AnimalsSpawnStrategy : MonoBehaviour, IAnimalsSpawnStrategy
 
             yield return new WaitForSeconds(interval);
 
-            Repository.SpawnRandomUnit();
+            Factory.SpawnRandomAnimal();
         }
     }
 }

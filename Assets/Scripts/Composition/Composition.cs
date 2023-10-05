@@ -28,13 +28,18 @@ public static class Composition
         return Instance.GetGameConfig();
     }
 
-    public static IAnimalsRepository GetAnimalsRepository()
+    public static IAnimalsFactory GetAnimalsFactory()
     {
-        return Instance.GetAnimalsRepository();
+        return Instance.GetAnimalsFactory();
     }
 
     public static IAnimalsSpawnStrategy GetAnimalsSpawnStrategy()
     {
         return Instance.GetAnimalsSpawnStrategy();
+    }
+
+    public static DeathCounterModel GetDeathCounter()
+    {
+        return Instance.GetDeathCounter();
     }
 }

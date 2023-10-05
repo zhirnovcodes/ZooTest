@@ -23,7 +23,7 @@ public class ResourceManager : IResourceManager
 
         if (!ObjectPools.ContainsKey(name))
         {
-            Func<GameObject> getFunc = () => LoadResource(name);
+            Func<GameObject> getFunc = () => InstantiatePrefab<E, GameObject>(name);
             var pool = new ObjectPool<GameObject>(getFunc);
             ObjectPools[name] = pool;
         }
@@ -39,7 +39,7 @@ public class ResourceManager : IResourceManager
         return resultComponent;
     }
 
-    private GameObject LoadResource<E>(E name) where E : Enum
+    public T InstantiatePrefab<E, T>(E name) where E : Enum where T : class
     {
         var folderName = typeof(E).Name;
         var fileName = name.ToString();
@@ -52,6 +52,15 @@ public class ResourceManager : IResourceManager
             return null;
         }
 
-        return GameObject.Instantiate( prefab );
+        var gameObject = GameObject.Instantiate(prefab);
+
+        if (typeof(GameObject).Equals(typeof(T)))
+        {
+            return gameObject as T;
+        }
+
+        var component = gameObject.GetComponent<T>();
+
+        return component;
     }
 }

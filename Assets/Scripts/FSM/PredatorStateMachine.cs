@@ -1,9 +1,11 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
-public class PreyStateMachine : IState
+public class PredatorStateMachine : IState
 {
-    private IPreyModel Model;
     private IMover Mover;
+    private IPredatorModel Model;
 
     private DeathCounterModel DeathCounter;
 
@@ -11,13 +13,12 @@ public class PreyStateMachine : IState
     private IState MovingState;
     private IState DyingState;
 
-    public PreyStateMachine(IPreyModel model, IMover mover, DeathCounterModel deathCounter)
+    public PredatorStateMachine(IPredatorModel model, IMover mover, DeathCounterModel deathCounter)
     {
         Model = model;
         Mover = mover;
         DeathCounter = deathCounter;
         MovingState = new MoveState(this);
-        DyingState = new DeathState(this);
     }
 
     public void Disable()
@@ -38,34 +39,51 @@ public class PreyStateMachine : IState
 
     private class MoveState : IState
     {
-        public PreyStateMachine Machine { get; }
+        private PredatorStateMachine StateMachine;
 
-        public MoveState(PreyStateMachine machine)
+        public MoveState(PredatorStateMachine stateMachine)
         {
-            Machine = machine;
+            StateMachine = stateMachine;
         }
 
         public void Disable()
         {
-            Machine.Mover.Disable();
+            StateMachine.Mover.Disable();
+            StateMachine.Model.AnimalCollided -= HandleAnimalCollided;
         }
 
         public void Enable()
         {
-            Machine.Mover.Enable();
+            StateMachine.Mover.Enable();
+            StateMachine.Model.AnimalCollided += HandleAnimalCollided;
+        }
+
+        private void HandleAnimalCollided(IAnimal other)
+        {
+            if (StateMachine.Model.IsAlive)
+            {
+                if (other is IMortal mortalOther)
+                {
+                    if (mortalOther.IsAlive)
+                    {
+                        mortalOther.Kill();
+                        StateMachine.Model.Speak();
+                    }
+                }
+            }
         }
 
         public void Update()
         {
-            if (!Machine.Model.IsAlive)
+            if (!StateMachine.Model.IsAlive)
             {
-                Machine.CurrentState.Disable();
-                Machine.CurrentState = Machine.DyingState;
-                Machine.CurrentState.Enable();
+                StateMachine.CurrentState.Disable();
+                StateMachine.CurrentState = StateMachine.DyingState;
+                StateMachine.CurrentState.Enable();
                 return;
             }
 
-            Machine.Mover.Update();
+            StateMachine.Mover.Update();
         }
     }
 
@@ -73,10 +91,10 @@ public class PreyStateMachine : IState
     {
         const float Interval = 1f;
 
-        private PreyStateMachine Machine;
+        private PredatorStateMachine Machine;
         private float ElapsedTime;
 
-        public DeathState(PreyStateMachine machine)
+        public DeathState(PredatorStateMachine machine)
         {
             Machine = machine;
         }
@@ -104,4 +122,5 @@ public class PreyStateMachine : IState
             }
         }
     }
+
 }
