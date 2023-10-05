@@ -15,6 +15,8 @@ public class AnimalsFactory : IAnimalsFactory
 
     private Dictionary<EAnimals, List<GameObject>> AnimalsPool = new Dictionary<EAnimals, List<GameObject>>();
 
+    private Collider[] HitColliders = new Collider[1];
+
     public AnimalsFactory(IResourceManager resourceManager, IParkModel park, DeathCounterModel deathCounter, GameConfig gameConfig)
     {
         ResourceManager = resourceManager;
@@ -26,9 +28,30 @@ public class AnimalsFactory : IAnimalsFactory
     public void SpawnRandomAnimal()
     {
         var type = GetRandomAnimalType();
-        // TODO height offset
-        var position = Park.GetRandomFreePoint() + new Vector3(0, 1f, 0);
+        var position = GetRandomAnimalPosition();
+
         BuildAnimal(type, position);
+    }
+
+    private Vector3 GetRandomAnimalPosition()
+    {
+        // TODO height offset
+        const float heightOffset = 1f;
+        const float radius = 1f;
+        const int attemptCount = 100;
+
+        for (int i = 0; i < attemptCount; i++)
+        {
+            var position = Park.GetRandomFreePoint() + new Vector3(0, heightOffset, 0);
+
+            int numColliders = Physics.OverlapSphereNonAlloc(position, radius, HitColliders);
+            if (numColliders == 0)
+            {
+                return position;
+            }
+        }
+
+        return Park.GetRandomFreePoint() + new Vector3(0, heightOffset, 0);
     }
 
     private void BuildAnimal(EAnimals type, Vector3 position)
