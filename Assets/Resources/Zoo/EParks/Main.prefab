@@ -763,8 +763,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b5679ad957e6253498605688637c77a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Plane: {fileID: 7156776639422783932}
   Size: {x: 20, y: 20}
   CameraPlaceholder: {fileID: 7530740143165161693}
+  Camera: {fileID: 0}
 --- !u!1 &7966785488142335548
 GameObject:
   m_ObjectHideFlags: 0

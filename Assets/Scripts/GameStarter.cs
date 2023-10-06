@@ -2,8 +2,12 @@ using UnityEngine;
 
 public class GameStarter : MonoBehaviour
 {
+    private IParkModel Park;
+
     void Awake()
     {
+        SetTargetFPS();
+
         InitializeComposition();
 
         ReadConfigs();
@@ -15,6 +19,11 @@ public class GameStarter : MonoBehaviour
         SpawnCamera();
 
         EnableStrategy();
+    }
+
+    private void SetTargetFPS()
+    {
+        Application.targetFrameRate = 60;
     }
 
     private void InitializeComposition()
@@ -30,18 +39,20 @@ public class GameStarter : MonoBehaviour
 
     private void SpawnPark()
     {
-        var park = Composition.GetParkModel();
-    }
-
-    private void SpawnCamera()
-    {
-        var camera = Composition.GetCamera();
+        Park = Composition.GetParkModel();
     }
 
     private void EnableGameView()
     {
         var presenter = Composition.GetGameViewPresenter();
         presenter.Enable();
+    }
+
+    private void SpawnCamera()
+    {
+        var camera = Composition.GetCamera();
+
+        Park.SetCamera(camera);
     }
 
     private void EnableStrategy()

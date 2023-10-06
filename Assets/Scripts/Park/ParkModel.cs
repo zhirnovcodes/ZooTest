@@ -2,46 +2,51 @@ using UnityEngine;
 
 public class ParkModel : MonoBehaviour, IParkModel
 {
-    public Vector2 Size = new Vector2(20, 20);
+    public Transform Plane;
     public Transform CameraPlaceholder;
 
-    public Vector3 GetCameraPosition()
-    {
-        return CameraPlaceholder.position;
-    }
+    public Camera Camera;
 
-    public Quaternion GetCameraRotation()
+    private Vector3 MinBounds;
+    private Vector3 MaxBounds;
+
+    public void SetCamera(Camera camera)
     {
-        return CameraPlaceholder.rotation;
+        Camera = camera;
+        Camera.transform.SetParent(CameraPlaceholder, false);
+        CalculateBounds();
     }
 
     public Vector3 GetCenter()
     {
-        return transform.position;
+        return Plane.position;
     }
 
     public Vector3 GetRandomFreePoint()
     {
-        var size = Size;
-        var position = GetCenter();
-
-        var x = Random.Range(position.x - size.x / 2, position.x + size.x / 2);
-        var z = Random.Range(position.z - size.y / 2, position.z + size.y / 2);
+        var x = Random.Range(MinBounds.x, MaxBounds.x);
+        var z = Random.Range(MinBounds.z, MaxBounds.z);
 
         return new Vector3(x, 0, z);
     }
 
     public bool IsOutOfBounds(Vector3 position)
     {
-        var size = Size;
-        var center = GetCenter();
+        return position.x < MinBounds.x || position.x > MaxBounds.x ||
+                position.z < MinBounds.z || position.z > MaxBounds.z;
+    }
 
-        var minX = center.x - size.x / 2;
-        var maxX = center.x + size.x / 2;
-        var minZ = center.z - size.y / 2;
-        var maxZ = center.z + size.y / 2;
+    private void CalculateBounds()
+    {
+        var rayMin = Camera.ViewportPointToRay(new Vector3(0, 0, 0));
+        var rayMax = Camera.ViewportPointToRay(new Vector3(1, 1, 0));
 
-        return position.x < minX || position.x > maxX ||
-                position.z < minZ || position.z > maxZ;
+        var plane = new Plane(Plane.up, Plane.position);
+
+        plane.Raycast(rayMin, out var distance);
+        MinBounds = rayMin.GetPoint(distance);
+
+        plane.Raycast(rayMax, out var distMax);
+        MaxBounds = rayMax.GetPoint(distance);
     }
 }

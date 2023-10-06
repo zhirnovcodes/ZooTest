@@ -60,10 +60,6 @@ public class ReleaseComposition : IComposition
         if (Camera == null)
         {
             Camera = Camera.main;
-            var park = GetParkModel();
-
-            Camera.transform.position = park.GetCameraPosition();
-            Camera.transform.rotation = park.GetCameraRotation();
         }
 
         return Camera;
