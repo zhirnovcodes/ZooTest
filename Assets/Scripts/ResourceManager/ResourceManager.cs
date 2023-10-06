@@ -5,31 +5,47 @@ using UnityEngine.Pool;
 
 public class ResourceManager : IResourceManager
 {
-    // TODO type
-    private Dictionary<object, ObjectPool<GameObject>> ObjectPools = new Dictionary<object, ObjectPool<GameObject>>();
+    private Dictionary<Type, Dictionary<int, List<GameObject>>> ObjectPools = new Dictionary<Type, Dictionary<int, List<GameObject>>>();
 
     public void Dispose()
     {
-        foreach (var pool in ObjectPools.Values)
+        foreach (var dictionary in ObjectPools.Values)
         {
-            pool.Dispose();
+            foreach (var pool in dictionary.Values)
+            {
+                for (int i = 0; i < pool.Count; i++)
+                {
+                    var disposableItem = pool[i];
+                    pool[i] = null;
+                    GameObject.Destroy(disposableItem);
+                }
+            }
+            dictionary.Clear();
         }
 
         ObjectPools.Clear();
     }
 
-    public T GetFromPool<E, T>(E name) where E : Enum where T : class
+    public T GetFromPool<E, T>(E name, out bool wasInstantiated) where E : Enum where T : class
     {
         var enumType = typeof(E);
 
-        if (!ObjectPools.ContainsKey(name))
+        if (!ObjectPools.ContainsKey(enumType))
         {
-            Func<GameObject> getFunc = () => InstantiatePrefab<E, GameObject>(name);
-            var pool = new ObjectPool<GameObject>(getFunc);
-            ObjectPools[name] = pool;
+            ObjectPools.Add(enumType, new Dictionary<int, List<GameObject>>());
         }
 
-        var resultObject = ObjectPools[name].Get();
+        var dictionary = ObjectPools[enumType];
+        // TODO leakage
+        var nameInt = (int)(object)name;
+
+        if (!dictionary.ContainsKey(nameInt))
+        {
+            var pool = new List<GameObject>();
+            dictionary.Add(nameInt, pool);
+        }
+
+        var resultObject = GetFromPoolList(dictionary[nameInt], name, out wasInstantiated);
 
         if (typeof(T).Equals(typeof(GameObject)))
         {
@@ -38,6 +54,32 @@ public class ResourceManager : IResourceManager
 
         var resultComponent = resultObject.GetComponent<T>();
         return resultComponent;
+    }
+
+    public T GetFromPool<E, T>(E name) where E : Enum where T : class
+    {
+        return GetFromPool<E, T>(name, out var wasInstatntiated);
+    }
+
+    private GameObject GetFromPoolList<E>(List<GameObject> pool, E name, out bool wasInstantiated) where E : Enum
+    {
+        wasInstantiated = false;
+
+        foreach (var obj in pool)
+        {
+            if (!obj.activeInHierarchy)
+            {
+                var activeObject = obj;
+                activeObject.SetActive(true);
+                return activeObject;
+            }
+        }
+
+        wasInstantiated = true;
+        var result = InstantiatePrefab<E, GameObject>(name);
+        pool.Add(result);
+
+        return result;
     }
 
     public T InstantiatePrefab<E, T>(E name) where E : Enum where T : class

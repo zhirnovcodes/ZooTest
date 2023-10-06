@@ -42,6 +42,11 @@ public class BannerSpeaker : ISpeaker
     {
         Banner = ResourceManager.GetFromPool<EWidgets, GameObject>(EWidgets.PredatorBaner);
 
+        ChangeBannerRotation();
+    }
+
+    private void ChangeBannerRotation()
+    {
         var lookAtPosition = 2f * Banner.transform.position - Camera.transform.position;
 
         Banner.transform.LookAt(lookAtPosition);
@@ -59,6 +64,7 @@ public class BannerSpeaker : ISpeaker
         {
             ElapsedTime -= Time.deltaTime;
             Banner.transform.position = Parent.position;
+            ChangeBannerRotation();
             yield return null;
         }
         DisposeBanner();

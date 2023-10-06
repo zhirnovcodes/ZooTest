@@ -13,8 +13,6 @@ public class AnimalsFactory : IAnimalsFactory
     private DeathCounterModel DeathCounter;
     private GameConfig GameConfig;
 
-    private Dictionary<EAnimals, List<GameObject>> AnimalsPool = new Dictionary<EAnimals, List<GameObject>>();
-
     private Collider[] HitColliders = new Collider[1];
     private Camera Camera;
 
@@ -91,34 +89,7 @@ public class AnimalsFactory : IAnimalsFactory
 
     private GameObject SpawnAnimal(EAnimals type, out bool wasInstantiated)
     {
-        if (!AnimalsPool.ContainsKey(type))
-        {
-            AnimalsPool.Add(type, new List<GameObject>());
-        }
-
-        GameObject animalPooled = null;
-
-        foreach (var animal in AnimalsPool[type])
-        {
-            if (!animal.activeInHierarchy)
-            {
-                animalPooled = animal;
-                break;
-            }
-        }
-
-        if (animalPooled == null)
-        {
-            var instantiated = ResourceManager.InstantiatePrefab<EAnimals, GameObject>(type);
-            AnimalsPool[type].Add(instantiated);
-            animalPooled = instantiated;
-            wasInstantiated = true;
-        }
-        else
-        {
-            animalPooled.SetActive(true);
-            wasInstantiated = false;
-        }
+        var animalPooled = ResourceManager.GetFromPool<EAnimals, GameObject>(type, out wasInstantiated);
 
         return animalPooled;
     }
