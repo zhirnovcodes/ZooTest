@@ -13,12 +13,15 @@ public class BannerSpeaker : ISpeaker
 
     private Transform Parent;
 
-    public BannerSpeaker(IResourceManager resourceManager, MonoBehaviour invoker, float interval, Transform parent)
+    private Camera Camera;
+
+    public BannerSpeaker(IResourceManager resourceManager, MonoBehaviour invoker, float interval, Transform parent, Camera camera)
     {
         ResourceManager = resourceManager;
         Invoker = invoker;
         Interval = interval;
         Parent = parent;
+        Camera = camera;
     }
 
     public void Speak()
@@ -29,9 +32,16 @@ public class BannerSpeaker : ISpeaker
             return;
         }
 
-        Banner = ResourceManager.GetFromPool<EWidgets, GameObject>(EWidgets.PredatorBaner);
+        SpawnBanner();
+
         ElapsedTime = Interval;
         Routine = Invoker.StartCoroutine(Coroutine());
+    }
+
+    private void SpawnBanner()
+    {
+        Banner = ResourceManager.GetFromPool<EWidgets, GameObject>(EWidgets.PredatorBaner);
+        Banner.transform.LookAt(Camera.transform.position);
     }
 
     private void DisposeBanner()

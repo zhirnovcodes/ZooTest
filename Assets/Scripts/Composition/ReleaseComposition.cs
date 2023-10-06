@@ -42,7 +42,8 @@ public class ReleaseComposition : IComposition
             var park = GetParkModel();
             var counter = GetDeathCounter();
             var gameConfig = GetGameConfig();
-            var repo = new AnimalsFactory(resource, park, counter, gameConfig);
+            var camera = GetCamera();
+            var repo = new AnimalsFactory(resource, park, counter, gameConfig, camera);
 
             AnimalsFactory = repo;
         }

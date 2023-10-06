@@ -16,13 +16,15 @@ public class AnimalsFactory : IAnimalsFactory
     private Dictionary<EAnimals, List<GameObject>> AnimalsPool = new Dictionary<EAnimals, List<GameObject>>();
 
     private Collider[] HitColliders = new Collider[1];
+    private Camera Camera;
 
-    public AnimalsFactory(IResourceManager resourceManager, IParkModel park, DeathCounterModel deathCounter, GameConfig gameConfig)
+    public AnimalsFactory(IResourceManager resourceManager, IParkModel park, DeathCounterModel deathCounter, GameConfig gameConfig, Camera camera)
     {
         ResourceManager = resourceManager;
         Park = park;
         DeathCounter = deathCounter;
         GameConfig = gameConfig;
+        Camera = camera;
     }
 
     public void SpawnRandomAnimal()
@@ -146,7 +148,7 @@ public class AnimalsFactory : IAnimalsFactory
                 var predatorModel = model as IPredatorModel;
                 var modelPredatorMono = predatorModel as MonoBehaviour;
                 var moverPredator = BuildMover(modelPredatorMono, config);
-                var speaker = new BannerSpeaker(ResourceManager, modelPredatorMono, 1f, modelPredatorMono.transform);
+                var speaker = new BannerSpeaker(ResourceManager, modelPredatorMono, 1f, modelPredatorMono.transform, Camera);
                 return new PredatorStateMachine(predatorModel, moverPredator, speaker, DeathCounter);
 
         }
