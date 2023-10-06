@@ -8,6 +8,8 @@ public class GameStarter : MonoBehaviour
 
         SpawnPark();
 
+        EnableGameView();
+
         SpawnCamera();
 
         EnableStrategy();
@@ -27,6 +29,12 @@ public class GameStarter : MonoBehaviour
     private void SpawnCamera()
     {
         var camera = Composition.GetCamera();
+    }
+
+    private void EnableGameView()
+    {
+        var presenter = Composition.GetGameViewPresenter();
+        presenter.Enable();
     }
 
     private void EnableStrategy()

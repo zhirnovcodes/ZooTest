@@ -12,4 +12,5 @@ public interface IComposition : IDisposable
     DeathCounterModel GetDeathCounter();
     GameConfigReader GetConfigReader();
     GameConfig GetGameConfig();
+    GameViewPresenter GetGameViewPresenter();
 }

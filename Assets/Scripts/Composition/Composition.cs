@@ -49,4 +49,9 @@ public static class Composition
     {
         return Instance.GetCamera();
     }
+
+    public static GameViewPresenter GetGameViewPresenter()
+    {
+        return Instance.GetGameViewPresenter();
+    }
 }

@@ -11,18 +11,10 @@ public class ReleaseComposition : IComposition
 
     private GameConfigReader ConfigReader;
     private GameConfig GameConfig;
+    private GameViewPresenter GameViewPresenter;
 
     public void Dispose()
     {
-        if (ParkModel != null)
-        {
-            GameObject.Destroy((ParkModel as MonoBehaviour).gameObject);
-        }
-        if (AnimalsSpawnStrategy != null)
-        {
-            GameObject.Destroy((AnimalsSpawnStrategy as MonoBehaviour).gameObject);
-        }
-
         Resource = null;
         ParkModel = null;
         ConfigReader = null;
@@ -31,6 +23,7 @@ public class ReleaseComposition : IComposition
         AnimalsSpawnStrategy = null;
         DeathCounter = null;
         Camera = null;
+        GameViewPresenter = null;
 
     }
 
@@ -105,12 +98,25 @@ public class ReleaseComposition : IComposition
         return GameConfig;
     }
 
+    public GameViewPresenter GetGameViewPresenter()
+    {
+        if (GameViewPresenter == null)
+        {
+            var deathCounter = GetDeathCounter();
+            var resourceManager = GetResourceManager();
+            var view = resourceManager.InstantiatePrefab<EViews, IGameView>(EViews.GameView);
+            GameViewPresenter = new GameViewPresenter(deathCounter, view);
+        }
+
+        return GameViewPresenter;
+    }
+
     public IParkModel GetParkModel()
     {
         if (ParkModel == null)
         {
             var resource = GetResourceManager();
-            var park = resource.GetFromPool<EParks, IParkModel>(EParks.Main);
+            var park = resource.InstantiatePrefab<EParks, IParkModel>(EParks.Main);
             ParkModel = park;
         }
 
