@@ -35,23 +35,25 @@ public class AnimalsFactory : IAnimalsFactory
 
     private Vector3 GetRandomAnimalPosition()
     {
-        // TODO height offset
+        // TODO to config
         const float heightOffset = 1f;
         const float radius = 1f;
         const int attemptCount = 100;
 
+        var position = Park.GetRandomFreePoint() + new Vector3(0, heightOffset, 0);
+
         for (int i = 0; i < attemptCount; i++)
         {
-            var position = Park.GetRandomFreePoint() + new Vector3(0, heightOffset, 0);
-
             int numColliders = Physics.OverlapSphereNonAlloc(position, radius, HitColliders);
             if (numColliders == 0)
             {
                 return position;
             }
+
+            position = Park.GetRandomFreePoint() + new Vector3(0, heightOffset, 0);
         }
 
-        return Park.GetRandomFreePoint() + new Vector3(0, heightOffset, 0);
+        return position;
     }
 
     private void BuildAnimal(EAnimals type, Vector3 position)
@@ -69,8 +71,9 @@ public class AnimalsFactory : IAnimalsFactory
 
         var animal = SpawnAnimal(type, out var wasInstantiated);
         animal.transform.position = position;
+        animal.transform.rotation = Quaternion.identity;
 
-        var morph = animal.GetComponent<MorphAnimal>();
+       var morph = animal.GetComponent<MorphAnimal>();
         if (wasInstantiated)
         {
 

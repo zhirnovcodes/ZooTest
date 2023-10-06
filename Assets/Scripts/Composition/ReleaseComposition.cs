@@ -7,6 +7,7 @@ public class ReleaseComposition : IComposition
     private IAnimalsFactory AnimalsFactory;
     private IAnimalsSpawnStrategy AnimalsSpawnStrategy;
     private DeathCounterModel DeathCounter;
+    private Camera Camera;
 
     private GameConfigReader ConfigReader;
     private GameConfig GameConfig;
@@ -29,6 +30,7 @@ public class ReleaseComposition : IComposition
         AnimalsFactory = null;
         AnimalsSpawnStrategy = null;
         DeathCounter = null;
+        Camera = null;
 
     }
 
@@ -57,6 +59,19 @@ public class ReleaseComposition : IComposition
         }
 
         return AnimalsSpawnStrategy;
+    }
+
+    public Camera GetCamera()
+    {
+        if (Camera == null)
+        {
+            Camera = GameObject.FindAnyObjectByType<Camera>();
+            var park = GetParkModel();
+            Camera.transform.position = park.GetCameraPosition();
+            Camera.transform.rotation = park.GetCameraRotation();
+        }
+
+        return Camera;
     }
 
     public GameConfigReader GetConfigReader()

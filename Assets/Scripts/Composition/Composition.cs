@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public static class Composition
 {
     private static IComposition Instance;
@@ -41,5 +43,10 @@ public static class Composition
     public static DeathCounterModel GetDeathCounter()
     {
         return Instance.GetDeathCounter();
+    }
+
+    public static Camera GetCamera()
+    {
+        return Instance.GetCamera();
     }
 }

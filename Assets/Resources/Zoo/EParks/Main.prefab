@@ -291,6 +291,37 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!1 &5842259065347301565
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7530740143165161693}
+  m_Layer: 0
+  m_Name: CameraPlaceholder
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7530740143165161693
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5842259065347301565}
+  m_LocalRotation: {x: 0.5034724, y: 0, z: 0, w: 0.8640113}
+  m_LocalPosition: {x: 0, y: 17.87, z: -13.81}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2953516132196771177}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 60.46, y: 0, z: 0}
 --- !u!1 &6434133201818368142
 GameObject:
   m_ObjectHideFlags: 0
@@ -716,6 +747,7 @@ Transform:
   - {fileID: 3206511017362731569}
   - {fileID: 6530816491112087084}
   - {fileID: 6951177303125457339}
+  - {fileID: 7530740143165161693}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -732,6 +764,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Size: {x: 20, y: 20}
+  CameraPlaceholder: {fileID: 7530740143165161693}
 --- !u!1 &7966785488142335548
 GameObject:
   m_ObjectHideFlags: 0

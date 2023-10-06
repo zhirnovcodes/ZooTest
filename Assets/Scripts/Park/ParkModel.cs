@@ -3,6 +3,17 @@ using UnityEngine;
 public class ParkModel : MonoBehaviour, IParkModel
 {
     public Vector2 Size = new Vector2(20, 20);
+    public Transform CameraPlaceholder;
+
+    public Vector3 GetCameraPosition()
+    {
+        return CameraPlaceholder.position;
+    }
+
+    public Quaternion GetCameraRotation()
+    {
+        return CameraPlaceholder.rotation;
+    }
 
     public Vector3 GetCenter()
     {
