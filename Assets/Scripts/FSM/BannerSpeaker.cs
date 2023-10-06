@@ -41,7 +41,10 @@ public class BannerSpeaker : ISpeaker
     private void SpawnBanner()
     {
         Banner = ResourceManager.GetFromPool<EWidgets, GameObject>(EWidgets.PredatorBaner);
-        Banner.transform.LookAt(Camera.transform.position);
+
+        var lookAtPosition = 2f * Banner.transform.position - Camera.transform.position;
+
+        Banner.transform.LookAt(lookAtPosition);
     }
 
     private void DisposeBanner()
