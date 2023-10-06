@@ -47,9 +47,7 @@ public class BannerSpeaker : ISpeaker
 
     private void ChangeBannerRotation()
     {
-        var lookAtPosition = 2f * Banner.transform.position - Camera.transform.position;
-
-        Banner.transform.LookAt(lookAtPosition);
+        Banner.transform.forward = Camera.transform.forward;
     }
 
     private void DisposeBanner()
@@ -60,10 +58,12 @@ public class BannerSpeaker : ISpeaker
 
     private IEnumerator Coroutine()
     {
+        const float heightOffset = 1.1f;
+
         while (ElapsedTime > 0)
         {
             ElapsedTime -= Time.deltaTime;
-            Banner.transform.position = Parent.position;
+            Banner.transform.position = Parent.position + new Vector3(0, heightOffset, 0);
             ChangeBannerRotation();
             yield return null;
         }

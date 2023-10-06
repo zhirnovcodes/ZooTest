@@ -59,8 +59,9 @@ public class ReleaseComposition : IComposition
     {
         if (Camera == null)
         {
-            Camera = GameObject.FindAnyObjectByType<Camera>();
+            Camera = Camera.main;
             var park = GetParkModel();
+
             Camera.transform.position = park.GetCameraPosition();
             Camera.transform.rotation = park.GetCameraRotation();
         }
