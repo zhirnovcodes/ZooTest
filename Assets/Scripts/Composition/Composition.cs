@@ -25,9 +25,9 @@ public static class Composition
         return Instance.GetParkModel();
     }
 
-    public static GameConfig GetGameConfig()
+    public static GameConfigReadonly GetGameConfigReadonly()
     {
-        return Instance.GetGameConfig();
+        return Instance.GetGameConfigReadonly();
     }
 
     public static IAnimalsFactory GetAnimalsFactory()

@@ -11,12 +11,13 @@ public class AnimalsSpawnStrategy : MonoBehaviour, IAnimalsSpawnStrategy
 
     private void Awake()
     {
-        Factory = Composition.GetAnimalsFactory(); 
+        Factory = Composition.GetAnimalsFactory();
 
-        var config = Composition.GetGameConfig();
+        var config = Composition.GetGameConfigReadonly();
+        var gameInfo = config.GetGameInfo();
 
-        MinInterval = config.AnimalsSpawnSecondsMin;
-        MaxInterval = config.AnimalsSpawnSecondsMax;
+        MinInterval = gameInfo.AnimalsSpawnSecondsMin;
+        MaxInterval = gameInfo.AnimalsSpawnSecondsMax;
     }
 
     public void Enable()

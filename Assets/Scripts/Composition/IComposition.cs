@@ -11,6 +11,6 @@ public interface IComposition : IDisposable
     Camera GetCamera();
     DeathCounterModel GetDeathCounter();
     GameConfigReader GetConfigReader();
-    GameConfig GetGameConfig();
+    GameConfigReadonly GetGameConfigReadonly();
     GameViewPresenter GetGameViewPresenter();
 }

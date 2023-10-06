@@ -11,12 +11,12 @@ public class AnimalsFactory : IAnimalsFactory
     private IParkModel Park;
 
     private DeathCounterModel DeathCounter;
-    private GameConfig GameConfig;
+    private GameConfigReadonly GameConfig;
 
     private Collider[] HitColliders = new Collider[1];
     private Camera Camera;
 
-    public AnimalsFactory(IResourceManager resourceManager, IParkModel park, DeathCounterModel deathCounter, GameConfig gameConfig, Camera camera)
+    public AnimalsFactory(IResourceManager resourceManager, IParkModel park, DeathCounterModel deathCounter, GameConfigReadonly gameConfig, Camera camera)
     {
         ResourceManager = resourceManager;
         Park = park;
@@ -58,17 +58,7 @@ public class AnimalsFactory : IAnimalsFactory
 
     private void BuildAnimal(EAnimals type, Vector3 position)
     {
-        // TODO dont read config as classes
-        AnimalConfig animalConfig = null;
-        foreach (var config in GameConfig.AnimalConfigs)
-        {
-            if (config.AnimalType == type)
-            {
-                animalConfig = config;
-                break;
-            }
-        }
-
+        var animalConfig = GameConfig.GetAnimalInfo(type);
         var animal = SpawnAnimal(type, out var wasInstantiated);
         animal.transform.position = position;
         animal.transform.rotation = Quaternion.identity;
@@ -105,7 +95,7 @@ public class AnimalsFactory : IAnimalsFactory
         return AvailableAnimals[randomIndex];
     }
 
-    private IState BuildStateMachine(IAnimal model, AnimalConfig config)
+    private IState BuildStateMachine(IAnimal model, AnimalInfo config)
     {
         switch (config.FoodChainType)
         {
@@ -126,7 +116,7 @@ public class AnimalsFactory : IAnimalsFactory
         throw new NotImplementedException();
     }
 
-    private IMover BuildMover(MonoBehaviour model, AnimalConfig config)
+    private IMover BuildMover(MonoBehaviour model, AnimalInfo config)
     {
         switch (config.MoverType)
         {
@@ -139,7 +129,7 @@ public class AnimalsFactory : IAnimalsFactory
         throw new NotImplementedException();
     }
 
-    private IMover BuildLinealMover(MonoBehaviour model, AnimalConfig config, IParkModel park)
+    private IMover BuildLinealMover(MonoBehaviour model, AnimalInfo config, IParkModel park)
     {
         var speed = config.Speed;
         var interval = config.MoveInterval;
@@ -147,7 +137,7 @@ public class AnimalsFactory : IAnimalsFactory
         return new LineMover(rigidbody, interval, speed, park);
     }
 
-    private IMover BuildJumpMover(MonoBehaviour model, AnimalConfig config, IParkModel park)
+    private IMover BuildJumpMover(MonoBehaviour model, AnimalInfo config, IParkModel park)
     {
         var speed = config.Speed;
         var interval = config.MoveInterval;

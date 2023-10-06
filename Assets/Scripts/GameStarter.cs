@@ -6,6 +6,8 @@ public class GameStarter : MonoBehaviour
     {
         InitializeComposition();
 
+        ReadConfigs();
+
         SpawnPark();
 
         EnableGameView();
@@ -19,6 +21,11 @@ public class GameStarter : MonoBehaviour
     {
         var composition = new ReleaseComposition();
         Composition.Initialize(composition);
+    }
+
+    private void ReadConfigs()
+    {
+        var config = Composition.GetGameConfigReadonly();
     }
 
     private void SpawnPark()

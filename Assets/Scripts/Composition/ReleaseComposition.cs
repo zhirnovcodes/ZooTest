@@ -10,7 +10,7 @@ public class ReleaseComposition : IComposition
     private Camera Camera;
 
     private GameConfigReader ConfigReader;
-    private GameConfig GameConfig;
+    private GameConfigReadonly GameConfigReadonly;
     private GameViewPresenter GameViewPresenter;
 
     public void Dispose()
@@ -18,7 +18,7 @@ public class ReleaseComposition : IComposition
         Resource = null;
         ParkModel = null;
         ConfigReader = null;
-        GameConfig = null;
+        GameConfigReadonly = null;
         AnimalsFactory = null;
         AnimalsSpawnStrategy = null;
         DeathCounter = null;
@@ -34,7 +34,7 @@ public class ReleaseComposition : IComposition
             var resource = GetResourceManager();
             var park = GetParkModel();
             var counter = GetDeathCounter();
-            var gameConfig = GetGameConfig();
+            var gameConfig = GetGameConfigReadonly();
             var camera = GetCamera();
             var repo = new AnimalsFactory(resource, park, counter, gameConfig, camera);
 
@@ -87,15 +87,16 @@ public class ReleaseComposition : IComposition
         return DeathCounter;
     }
 
-    public GameConfig GetGameConfig()
+    public GameConfigReadonly GetGameConfigReadonly()
     {
-        if (GameConfig == null)
+        if (GameConfigReadonly == null)
         {
             var reader = GetConfigReader();
-            GameConfig = reader.GetGameConfig();
+            var config = reader.GetGameConfig();
+            GameConfigReadonly = new GameConfigReadonly(config);
         }
 
-        return GameConfig;
+        return GameConfigReadonly;
     }
 
     public GameViewPresenter GetGameViewPresenter()
